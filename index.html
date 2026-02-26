@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Rainy Wish - Rakib</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;600&family=Anek+Bangla:wght@200;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -18,33 +18,27 @@
     </div>
 
     <div class="main-container">
-        <div class="room-inside">
-            <div class="room-shadow"></div>
-            <div class="sky-background">
-                <div class="moon">🌙</div>
-                <div class="stars"></div>
+        <div class="room-view">
+            <div class="sky">
+                <div class="moon"></div>
+                <div class="stars" id="stars"></div>
             </div>
-            <div class="boy-silhouette">🧑‍💻</div>
-        </div>
+            <div class="window-frame"></div>
+            <div class="sad-boy">🧑‍💻</div> </div>
 
-        <div class="rain-drops" id="rainLayer"></div>
+        <div class="rain-overlay"></div>
         
         <canvas id="fogCanvas"></canvas>
 
-        <div class="instruction" id="msg">জানলার কাঁচটি হাত দিয়ে পরিষ্কার করো...</div>
+        <div class="instruction" id="msg">জানলার কাঁচটি পুরোপুরি পরিষ্কার করো...</div>
 
         <div class="premium-card" id="premiumCard">
             <div class="close-btn" onclick="closeCard()">×</div>
             <div class="card-content">
-                <h1 class="title">রমজান মোবারক</h1>
+                <h1>রমজান মোবারক</h1>
                 <h3 id="display-name">প্রিয়, </h3>
-                <div class="letter-body">
-                    <p>প্রিয় রমজানের শুভেচ্ছা। আশা করি খুব ভালোভাবে রমজান এনজয় করছো। অনেকদিন ধরেই তোমার সাথে কথা হচ্ছে, যদি কখনো মনে কষ্ট দিয়ে থাকি তাহলে সরি। ভালোভাবে বাকি রমজানগুলো এনজয় করো। এই রাকিব তোমার পাশে অলওয়েজ ছিল, আছে এবং থাকবে।</p>
-                </div>
-                <div class="signature">
-                    <p>ইতি তোমারই,</p>
-                    <p class="name-bold">রাকিব</p>
-                </div>
+                <p>প্রিয় রমজানের শুভেচ্ছা। আশা করি খুব ভালোভাবে রমজান এনজয় করছো। অনেকদিন ধরেই তোমার সাথে কথা হচ্ছে, যদি কখনো মনে কষ্ট দিয়ে থাকি তাহলে সরি। ভালোভাবে বাকি রমজানগুলো এনজয় করো। এই রাকিব তোমার পাশে অলওয়েজ ছিল, আছে এবং থাকবে।</p>
+                <div class="footer">ইতি তোমারই, <br><b>রাকিব</b></div>
             </div>
         </div>
     </div>
