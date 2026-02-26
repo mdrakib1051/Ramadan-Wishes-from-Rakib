@@ -2,107 +2,92 @@ const canvas = document.getElementById('fogCanvas');
 const ctx = canvas.getContext('2d');
 const card = document.getElementById('premiumCard');
 let isWiping = false;
-let userName = "";
+let hasStarted = false; 
 
-// 1. Start Game: Shudhu Fog dekhabe, Card na
+// Initialize Screen
 function startGame() {
-    userName = document.getElementById('userName').value;
-    if (userName.trim() !== "") {
-        document.getElementById('display-name').innerText = "প্রিয় " + userName + ",";
+    const nameValue = document.getElementById('userName').value;
+    if (nameValue.trim() !== "") {
+        document.getElementById('display-name').innerText = "প্রিয় " + nameValue + ",";
         
-        // Name screen shore jabe
-        const nameScreen = document.getElementById('name-screen');
-        nameScreen.style.opacity = "0";
+        // Hide name screen gently
+        document.getElementById('name-screen').style.opacity = "0";
         setTimeout(() => {
-            nameScreen.style.display = "none";
-            // Ekhon kanch foggy hobe
-            initFog();
-        }, 500);
+            document.getElementById('name-screen').style.display = "none";
+            hasStarted = true;
+            initFog(); // Name lekhara por-i shudhu fog ashbe
+        }, 800);
     } else {
-        alert("দয়া করে তোমার নামটি লিখো");
+        alert("তোমার নাম লিখো আগে!");
     }
 }
 
-// 2. Fog Layer create kora (Card thakbe pichone lukiye)
 function initFog() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     
-    // Deep foggy blue color
-    ctx.fillStyle = 'rgba(20, 35, 50, 0.98)'; 
+    // Thick Fog Layer
+    ctx.fillStyle = 'rgba(25, 35, 50, 0.98)'; 
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
-// 3. Wiping Mechanism
 function wipe(e) {
-    if (!isWiping) return;
-    
-    // Mobile-e screen scroll/movement bondho korbe
-    if (e.cancelable) e.preventDefault();
+    if (!isWiping || !hasStarted) return;
+    if (e.cancelable) e.preventDefault(); // Stop scrolling
 
     let x = (e.touches ? e.touches[0].clientX : e.clientX);
     let y = (e.touches ? e.touches[0].clientY : e.clientY);
 
     ctx.globalCompositeOperation = 'destination-out';
     ctx.beginPath();
-    ctx.arc(x, y, 45, 0, Math.PI * 2); // Brush size ektu boro kora holo
+    ctx.arc(x, y, 40, 0, Math.PI * 2);
     ctx.fill();
 }
 
-// 4. Pixel Detection: Purota ghosheche kina check kora
-function checkProgress() {
+function checkScratch() {
+    if (!hasStarted) return;
+
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const pixels = imageData.data;
-    let cleared = 0;
+    let transparent = 0;
 
-    // Protiti 4th pixel check (Performance-er jonno)
-    for (let i = 3; i < pixels.length; i += 4) {
-        if (pixels[i] === 0) cleared++;
+    // Check every 40th pixel for performance
+    for (let i = 3; i < pixels.length; i += 160) {
+        if (pixels[i] === 0) transparent++;
     }
 
-    const total = pixels.length / 4;
-    const percentage = (cleared / total) * 100;
+    const total = pixels.length / 160;
+    const percentage = (transparent / total) * 100;
 
-    // 50% ghosha holei card ashbe
-    if (percentage > 50) {
-        triggerCardReveal();
+    // Strict Check: User-ke pray 60% window ghoshte hobe
+    if (percentage > 60) {
+        revealCard();
     }
 }
 
-function triggerCardReveal() {
-    // Canvas fade out hoye jabe dhire dhire
+function revealCard() {
     canvas.style.transition = "opacity 2s ease";
     canvas.style.opacity = "0";
     
-    document.getElementById('msg').style.display = "none";
-
-    // Card-ta 3D animation niye ashbe
     setTimeout(() => {
-        card.classList.add('active');
-        canvas.style.display = "none"; // Purapuri shore jabe
-    }, 500);
+        card.classList.add('active'); // Final Letter Show
+        canvas.style.display = "none";
+        document.getElementById('msg').style.display = "none";
+    }, 1000);
 }
 
 function closeCard() {
     card.classList.remove('active');
     canvas.style.display = "block";
     canvas.style.opacity = "1";
-    initFog(); // Abar foggy hoye jabe
+    initFog(); // Reset scratch
 }
 
-// Event Listeners (Mouse & Touch)
+// Listeners for Mouse and Touch
 canvas.addEventListener('mousedown', () => isWiping = true);
-window.addEventListener('mouseup', () => {
-    isWiping = false;
-    checkProgress(); // Haath chharle check korbe koto tuku holo
-});
+window.addEventListener('mouseup', () => { isWiping = false; checkScratch(); });
 canvas.addEventListener('mousemove', wipe);
 
-canvas.addEventListener('touchstart', (e) => {
-    isWiping = true;
-}, {passive: false});
-canvas.addEventListener('touchend', () => {
-    isWiping = false;
-    checkProgress();
-});
+canvas.addEventListener('touchstart', (e) => { isWiping = true; }, {passive: false});
+canvas.addEventListener('touchend', () => { isWiping = false; checkScratch(); });
 canvas.addEventListener('touchmove', wipe, {passive: false});
